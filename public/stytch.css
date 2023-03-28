@@ -26,7 +26,7 @@ p {
 }
 
 main {
-  display: flex;
+  display: flex !important;
   min-height: calc(100vh - 70px);
   justify-content: center;
   align-items: center;

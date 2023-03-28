@@ -10,21 +10,29 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@emotion/styled": "^11.10.6",
+    "@mdi/font": "^7.2.96",
+    "@mdi/js": "^7.2.96",
     "@rushstack/eslint-patch": "^1.2.0",
     "@stytch/vanilla-js": "^0.10.10",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
     "@vue/eslint-config-prettier": "^7.1.0",
+    "bootstrap-icons": "^1.10.3",
     "eslint": "^8.36.0",
     "eslint-plugin-vue": "^9.10.0",
     "prettier": "^2.8.7",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vuetify": "^3.1.11"
   },
   "devDependencies": {
     "@types/node": "^18.14.2",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vue/tsconfig": "^0.1.3",
+    "autoprefixer": "^10.4.14",
     "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.7",
     "typescript": "~4.8.4",
     "vite": "^4.1.4",
     "vue-tsc": "^1.2.0"
