@@ -20,8 +20,25 @@ function logout() {
             @click="showModal">+ADD New Demand</button>
         </div>
         <div class="flex gap-4">
-          <h1>Start Date</h1>
-          <h1>End Date</h1>
+          <div>
+            <h1>Start Date</h1>
+            <template>
+            <v-text-field
+              v-model="computedDateFormatted"
+              label="Date (read only text field)"
+              hint="MM/DD/YYYY format"
+              persistent-hint
+              prepend-icon="event"
+              readonly
+              v-on="on"
+            ></v-text-field>
+          </template>
+            <v-date-picker v-model="date" no-title ></v-date-picker>
+          </div>
+          <div>
+            <h1>End Date</h1>
+            <v-date-picker v-model="date" no-title ></v-date-picker>
+          </div>
         </div>
       </div>
 
@@ -68,22 +85,33 @@ function logout() {
       </div>
 
       <div class="grid grid-cols-8 w-full" id="header" v-for="(demand, index) in demands" :key="index">
-        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">{{ demand.name }}</div>
-        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">{{ demand.status }}</div>
-        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">${{ demand.floor }}</div>
-        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">{{ demand.bid_type }}</div>
-        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">{{ String(demand.vast_url).slice(0,11)}}..</div>
+        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">{{
+          demand.name }}</div>
+        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center ">
+          <h1 class="text-green-500" v-if="demand.status === 'Active'">{{
+            demand.status }}</h1>
+          <h1 class="text-red-300" v-if="demand.status === 'Inactive'">{{
+            demand.status }}</h1>
+        </div>
+        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">${{
+          demand.floor }}</div>
+        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">{{
+          demand.bid_type }}</div>
+        <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">{{
+          String(demand.vast_url).slice(0, 11) }}..</div>
         <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">
           {{ demand.fill_rate }}%</div>
         <div class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center">
           ${{ demand.revenue }}k</div>
-        <div class="bg-white text-black border border-black border-[2px] text-[10px] px-[5px] py-[20px] font-bold text-center flex gap-2 ">
+        <div
+          class="bg-white text-black border border-black border-[2px] text-[10px] px-[5px] py-[20px] font-bold text-center flex gap-2 ">
           <v-btn variant="tonal" class="text-[12px]" @click="editModalShow(demand.id)">Edit</v-btn>
-          <v-btn variant="tonal" class="text-[12px]">Delete</v-btn>
+          <v-btn variant="tonal" class="text-[12px]" @click="deleteItem(demand.id)">Delete</v-btn>
         </div>
       </div>
     </div>
-    <Modal v-show="isModalVisible"  @close="closeModal" />
+    <Modal v-show="isModalVisible" :value="value" :isModalVisible="isModalVisible" :getDemands="getDemands"
+      @close="closeModal" />
   </div>
 </template>
 
@@ -94,7 +122,8 @@ import axios from 'axios';
 export default {
   name: 'DashboardView',
   components: {
-    Modal
+    Modal,
+    value: null
   },
   data() {
     return {
@@ -105,9 +134,22 @@ export default {
   methods: {
     showModal() {
       this.isModalVisible = true;
+      this.value = null
+      console.log(this.value)
     },
-    editModalShow() {
-      this.isModalVisible = true;
+    editModalShow(id) {
+      console.log("id = ", id)
+      const path = 'http://localhost:3002/api/demands';
+      axios.get(path + '/' + String(id))
+        .then(res => {
+          console.log(res.data)
+          this.value = { id: res.data.id, name: res.data.name, status: res.data.status == "Active" ? true : false, floor: parseFloat(res.data.floor), bid_type: res.data.bid_type === "Fixed" ? false : true, vast_url: res.data.vast_url, fill_rate: parseFloat(res.data.fill_rate), revenue: parseFloat(res.data.revenue) }
+          this.isModalVisible = true;
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      this.value = null
     },
     closeModal() {
       this.isModalVisible = false;
@@ -118,6 +160,22 @@ export default {
         .then((res) => {
           this.demands = res.data;
           console.log("demands:", res.data);
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    deleteItem(id) {
+      const path = 'http://localhost:3002/api/demands/' + String(id);
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+      axios.delete(path, config)
+        .then(() => {
+          console.log("Ok")
+          this.getDemands()
         })
         .catch((err) => {
           console.log(err)

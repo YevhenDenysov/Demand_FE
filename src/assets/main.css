@@ -31,3 +31,9 @@ a,
     place-items: center;
   }
 }
+
+.log_container{
+    min-width: 650px;
+    width: 100%;
+    padding: 0 16px;  
+}
