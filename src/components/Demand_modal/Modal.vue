@@ -31,7 +31,7 @@
           <h1 class="font-bold">Floor[cpm]</h1>
         </div>
         <div class="w-full">
-        <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="floor" />
+        <input type="number" class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="floor" />
           <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.floor"
               v-else-if="value != null" /> -->
           <span class="text-red" v-if="isFloorValid">Please enter a valid Floor.</span>
@@ -60,26 +60,10 @@
         <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="vast_url" />
           <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.vast_url"
               v-else-if="value != null" /> -->
-          <span class="text-red" v-if="isVastValid">Please enter a valid Vast URL.</span>
+          <span class="text-red" v-if="isVastValid == 1">Please enter a valid Vast URL.</span>
+          <span class="text-red" v-else-if="isVastValid == 2">URL is not required.</span>
         </div>
       </div>
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[100px] flex items-center">
-          <h1 class="font-bold">Fill Rate</h1>
-        </div>
-      <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="fill_rate" />
-        <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.fill_rate"
-            v-else-if="value != null" /> -->
-      </div>
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[100px] flex items-center">
-          <h1 class="font-bold">Revenue</h1>
-        </div>
-      <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="revenue" />
-        <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.revenue"
-            v-else-if="value != null" /> -->
-      </div>
-
       <div class="flex justify-between mt-[30px]">
         <button type="button" class="text-[20px] px-[30px] py-[10px]  rounded-[40px] border border-black" @click="close">
           CANCEL
@@ -133,7 +117,7 @@ export default {
       this.fill_rate = 0;
       this.revenue = 0;
       this.isNameValid = false;
-      this.isVastValid = false;
+      this.isVastValid = 0;
       this.getDemands();
     },
     create: function () {
@@ -144,11 +128,21 @@ export default {
       }
       else this.isNameValid = false
 
+      const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w\.-]*)*\/?$/;
+
+      console.log("TestUrl: ",urlPattern.test(this.vast_url))
+
       if (this.vast_url == "") {
-        this.isVastValid = true
+        this.isVastValid = 1
         validflag = 1;
       }
-      else this.isVastValid = false
+      else 
+      if(!urlPattern.test(this.vast_url)){
+        validflag = 1
+        this.isVastValid = 2
+      }
+      else this.isVastValid = 0
+
       if (validflag)
         return;
 
@@ -166,13 +160,20 @@ export default {
 
       const request = { user_email: user_email, name: name, status: status, floor: String(floor), bid_type: bid_type, vast_url: vast_url, fill_rate: String(fill_rate), revenue: String(revenue) };
       console.log(request);
-      const path = 'http://localhost:3002/api/demands';
+      const path = 'https://6e9c-65-109-52-221.eu.ngrok.io/api/demands';
       const config = {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          withCredentials: true,
+          "ngrok-skip-browser-warning": "any",
         }
       }
-      axios.post(path, request, config)
+      axios.post(path, request, {
+        headers: {
+          'Content-Type': 'application/json',
+          withCredentials: true,
+          "ngrok-skip-browser-warning": "any",
+        }})
         .then(() => {
           console.log("OK")
           this.name = '';
@@ -223,10 +224,12 @@ export default {
 
       const request = { user_email: user_email, name: name, status: status, floor: String(floor), bid_type: bid_type, vast_url: vast_url, fill_rate: String(fill_rate), revenue: String(revenue) };
       console.log(request);
-      const path = 'http://localhost:3002/api/demands/' + String(this.value.id);
+      const path = 'https://6e9c-65-109-52-221.eu.ngrok.io/api/demands/' + String(this.value.id);
       const config = {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          withCredentials: true,
+          "ngrok-skip-browser-warning": "any",
         }
       }
       axios.put(path, request, config)

@@ -15,7 +15,7 @@ const styles = {
   }
 }
 
-const REDIRECT_URL = 'http://localhost:3000/authenticate'
+const REDIRECT_URL = 'https://auido-hoo-fe.vercel.app/authenticate'
 const config = {
   products: [Products.oauth, Products.emailMagicLinks],
   oauthOptions: {
