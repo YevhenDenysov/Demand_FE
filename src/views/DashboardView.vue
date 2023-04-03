@@ -15,6 +15,12 @@ function logout() {
       class="w-[100px] bg-indigo-500 text-white rounded-[4px] font-bold mb-3 py-[10px] text-[20px]">Log out</button> -->
     <div class="card border-none">
       <div class="flex justify-between w-full">
+        <div></div>
+        <v-btn icon variant="tonal" @click="showSettingModal">
+          <v-icon>mdi-cog</v-icon>
+        </v-btn>
+      </div>
+      <div class="flex justify-between w-full">
         <div>
           <button
             type="button"
@@ -149,12 +155,12 @@ function logout() {
         <div
           class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center"
         >
-          {{ demand.fill_rate }}%
+          {{ demand.fill_rate ? demand.fill_rate : 0 }}%
         </div>
         <div
           class="bg-white text-black border border-black border-[2px] text-[15px] py-[20px] font-bold text-center"
         >
-          ${{ demand.revenue }}k
+          ${{ demand.revenue ? demand.revenue : 0 }}k
         </div>
         <div
           class="bg-white text-black border border-black border-[2px] text-[10px] px-[5px] py-[20px] font-bold text-center flex gap-2"
@@ -163,13 +169,17 @@ function logout() {
             variant="tonal"
             class="text-[12px]"
             @click="editModalShow(demand.id)"
-            >Edit</v-btn
+            >
+            <v-icon>mdi-pencil</v-icon>
+            </v-btn
           >
           <v-btn
             variant="tonal"
             class="text-[12px]"
             @click="deleteItem(demand.id)"
-            >Delete</v-btn
+            >
+            <v-icon>mdi-delete</v-icon>
+            </v-btn
           >
         </div>
       </div>
@@ -181,20 +191,28 @@ function logout() {
       :getDemands="getDemands"
       @close="closeModal"
     />
+    <SettingModal
+      v-show="isSettingModalVisible"
+      :isSettingModalVisible="isSettingModalVisible"
+      @close="closeSettingModal"
+    />
   </div>
 </template>
 
 <script>
-import Modal from "../components/Demand_modal/Modal.vue";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { watch, ref } from "vue";
+import Modal from "../components/Demand_modal/Modal.vue";
+import SettingModal from "../components/Setting_modal/Modal.vue";
+import router from "../router";
 
 export default {
   name: "DashboardView",
   components: {
     Modal,
+    SettingModal,
     value: null,
     VueDatePicker,
   },
@@ -202,9 +220,10 @@ export default {
     return {
       demands: [],
       isModalVisible: false,
+      isSettingModalVisible: false,
       // date: new Date().toISOString().substr(0,10),
-      startDate: '',
-      endDate: ''
+      startDate: "",
+      endDate: "",
     };
   },
   methods: {
@@ -212,6 +231,9 @@ export default {
       this.isModalVisible = true;
       this.value = null;
       console.log(this.value);
+    },
+    showSettingModal() {
+      this.isSettingModalVisible = true;
     },
     editModalShow(id) {
       console.log("id = ", id);
@@ -233,8 +255,9 @@ export default {
             floor: parseFloat(res.data.floor),
             bid_type: res.data.bid_type === "Fixed" ? false : true,
             vast_url: res.data.vast_url,
-            fill_rate: parseFloat(res.data.fill_rate),
-            revenue: parseFloat(res.data.revenue),
+            source_fee: res.data.source_fee,
+            source_fee_type_percentage: res.data.source_fee_type_percentage,
+            source_fee_value: res.data.source_fee_value
           };
           this.isModalVisible = true;
         })
@@ -246,10 +269,21 @@ export default {
     closeModal() {
       this.isModalVisible = false;
     },
+    closeSettingModal() {
+      this.isSettingModalVisible = false;
+    },
     getDemands() {
-      const path = "https://6e9c-65-109-52-221.eu.ngrok.io/api/demands";
+      const path = "https://6e9c-65-109-52-221.eu.ngrok.io/api/demandsByEmail";
+      const data = localStorage.getItem(
+        "stytch_sdk_state_" + import.meta.env.VITE_STYTCH_PUBLIC_TOKEN
+      );
+      const jsonData = JSON.parse(data);
+
+      const user_email = jsonData.user.emails[0].email;
+      const request = { user_email: user_email };
+      console.log("request:", request);
       axios
-        .get(path, {
+        .post(path, request, {
           headers: {
             "Content-Type": "application/json",
             withCredentials: true,
@@ -284,49 +318,81 @@ export default {
           console.log(err);
         });
     },
-    getDemandsByDate(start_date, end_date){
-      const request = {startDate: start_date, endDate: end_date}
-      console.log(request)
-      const path ="https://6e9c-65-109-52-221.eu.ngrok.io/api/demandsByDate"
-      axios.post(path, request,{
-        headers: {
-          'Content-Type': 'application/json',
-          withCredentials: true,
-          "ngrok-skip-browser-warning": "any",
-        }})
+    getDemandsByDate(start_date, end_date) {
+      const data = localStorage.getItem(
+        "stytch_sdk_state_" + import.meta.env.VITE_STYTCH_PUBLIC_TOKEN
+      );
+      const jsonData = JSON.parse(data);
+
+      const user_email = jsonData.user.emails[0].email;
+
+      const request = {
+        user_email: user_email,
+        startDate: start_date,
+        endDate: end_date,
+      };
+      console.log(request);
+      const path = "https://6e9c-65-109-52-221.eu.ngrok.io/api/demandsByDate";
+      axios
+        .post(path, request, {
+          headers: {
+            "Content-Type": "application/json",
+            withCredentials: true,
+            "ngrok-skip-browser-warning": "any",
+          },
+        })
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           this.demands = res.data;
         })
         .catch((err) => {
-          console.log(err)
-        })
-    }
+          console.log(err);
+        });
+    },
   },
   created() {
-    this.getDemands();
+    console.log("Dahsboard started");
+    const data = localStorage.getItem(
+      "stytch_sdk_state_" + import.meta.env.VITE_STYTCH_PUBLIC_TOKEN
+    );
+    const jsonData = JSON.parse(data);
+    const user_email = jsonData.user.emails[0].email;
+    
+    console.log("userEmail:",user_email)
+    const request = {user_email: user_email}
+    const path = "https://6e9c-65-109-52-221.eu.ngrok.io/api/checkVastTag";
+    axios.post(path, request, {
+          headers: {
+            "Content-Type": "application/json",
+            withCredentials: true,
+            "ngrok-skip-browser-warning": "any",
+          },
+        }).then((res) => {
+          console.log(res.data)
+          if(res.data == 'ok')
+            this.getDemands();
+        }).catch((err) => {
+          console.log(err)
+          router.push({ name: 'vasttag' })
+        })
   },
   watch: {
-    startDate(newVal){
-      new Date(newVal).setHours(0,0,0,0)
-      const start_date = newVal ? newVal : new Date(1970,1,1);
-      const end_date = this.endDate ? this.endDate : new Date(2500,1,1);
-      console.log("star_date:", start_date)
-      console.log("end_date:", end_date)
-      this.getDemandsByDate(start_date,end_date)
+    startDate(newVal) {
+      new Date(newVal).setHours(0, 0, 0, 0);
+      const start_date = newVal ? newVal : new Date(1970, 1, 1);
+      const end_date = this.endDate ? this.endDate : new Date(2500, 1, 1);
+      console.log("star_date:", start_date);
+      console.log("end_date:", end_date);
+      this.getDemandsByDate(start_date, end_date);
     },
-    endDate(newVal){
-      new Date(newVal).setHours(0,0,0,0)
-      const start_date = this.startDate ? this.startDate : new Date(1970,1,1);
-      const end_date = this.endDate ? this.endDate : new Date(2500,1,1);
-      console.log("star_date:", start_date)
-      console.log("end_date:", end_date)
-      this.getDemandsByDate(start_date,end_date)
-    }
+    endDate(newVal) {
+      new Date(newVal).setHours(0, 0, 0, 0);
+      const start_date = this.startDate ? this.startDate : new Date(1970, 1, 1);
+      const end_date = this.endDate ? this.endDate : new Date(2500, 1, 1);
+      console.log("star_date:", start_date);
+      console.log("end_date:", end_date);
+      this.getDemandsByDate(start_date, end_date);
+    },
   }
-  // setup() {
-  //   return {start_date,end_date}
-  // }
 };
-
 </script>

@@ -1,13 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthenticateView from '../views/AuthenticateView.vue'
-import LoginView from '../views/LoginView.vue'
+import CreateAccountView from '../views/CreateAccountView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import LoginView from '../views/LoginView.vue'
+import VastTagView from '../views/VastTagView.vue'
 import stytch from '../stytch'
 
 export const ROUTES = {
   LOGIN: 'login',
   AUTHENTICATE: 'authenticate',
-  DASHBOARD: 'dashboard'
+  DASHBOARD: 'dashboard',
+  CREATEACCOUNT: 'createaccount',
+  VASTTAG: 'vasttag'
 }
 
 const router = createRouter({
@@ -24,6 +28,18 @@ const router = createRouter({
       name: ROUTES.AUTHENTICATE,
       component: AuthenticateView,
       meta: { requiresAuth: false }
+    },
+    {
+      path: '/createaccount',
+      name: ROUTES.CREATEACCOUNT,
+      component: CreateAccountView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path:'/vastTag',
+      name: ROUTES.VASTTAG,
+      component: VastTagView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/dashboard',

@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.10.6",
-    "@mdi/font": "^7.2.96",
     "@mdi/js": "^7.2.96",
     "@rushstack/eslint-patch": "^1.2.0",
     "@stytch/react": "^0.10.3",
@@ -25,11 +24,13 @@
     "eslint": "^8.36.0",
     "eslint-plugin-vue": "^9.10.0",
     "prettier": "^2.8.7",
+    "vee-validate": "^4.8.4",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
     "vuetify": "^3.1.12"
   },
   "devDependencies": {
+    "@mdi/font": "^7.2.96",
     "@types/node": "^18.14.2",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vue/tsconfig": "^0.1.3",

@@ -1,5 +1,7 @@
 <script setup>
 import stytch from '../stytch'
+import router from '../router'
+
 // Look for the Stytch token in query params.
 const queryParams = new URLSearchParams(window.location.search)
 const token = queryParams.get('token')
@@ -13,19 +15,22 @@ if (token && tokenType) {
         session_duration_minutes: 60
       })
       .then(() => console.log('Successful authentication: Email magic link'))
-      .catch((err) => {
+      .catch((err) => { 
         console.error(err)
         alert('Email Magic Link authentication failed. See console for details.')
       })
   } else if (tokenType === 'oauth') {
+    console.log("token==",token);
     stytch.oauth
       .authenticate(token, {
         session_duration_minutes: 60
       })
-      .then(() => console.log('Successful authentication: OAuth'))
+      .then(() => {
+        console.log('Successful authentication: OAuth')
+        router.push('/dashboard')
+      })
       .catch((err) => {
         console.error(err)
-        alert('OAuth authentication failed. See console for details.')
       })
   }
 } else {

@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount } from 'vue'
 import { RouterView } from 'vue-router'
+import axios from "axios";
 import stytch from './stytch'
 import router from './router'
 /*
@@ -12,8 +13,10 @@ The logic below listens to changes on the Stytch Session to:
 */
 const unsubscribe = stytch.session.onChange((session) => {
   console.log('ONCHANGE', session)
+
   if (session) {
-    router.push({ name: 'dashboard' })
+    // router.push({ name: 'dashboard' })
+    router.push({name: 'dashboard'})
   } else {
     router.push({ name: 'login' })
   }

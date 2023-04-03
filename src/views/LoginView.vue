@@ -15,7 +15,8 @@ const styles = {
   }
 }
 
-const REDIRECT_URL = 'https://auido-hoo-fe.vercel.app/authenticate'
+const REDIRECT_URL = 'https://bb71-188-43-136-42.jp.ngrok.io/authenticate'
+
 const config = {
   products: [Products.oauth, Products.emailMagicLinks],
   oauthOptions: {
