@@ -15,7 +15,7 @@ function logout() {
       class="w-[100px] bg-indigo-500 text-white rounded-[4px] font-bold mb-3 py-[10px] text-[20px]">Log out</button> -->
     <div class="card border-none">
       <div class="flex justify-between w-full">
-        <div></div>
+        <div><h1 class="font-bold text-[30px]">{{ companyName }}</h1></div>
         <v-btn icon variant="tonal" @click="showSettingModal">
           <v-icon>mdi-cog</v-icon>
         </v-btn>
@@ -219,6 +219,7 @@ export default {
   data() {
     return {
       demands: [],
+      companyName: "" ,
       isModalVisible: false,
       isSettingModalVisible: false,
       // date: new Date().toISOString().substr(0,10),
@@ -373,8 +374,34 @@ export default {
             this.getDemands();
         }).catch((err) => {
           console.log(err)
-          router.push({ name: 'vasttag' })
+          const path1 = "https://6e9c-65-109-52-221.eu.ngrok.io/api/checkEmail";
+          axios.post(path1, request, {
+            headers: {
+              "Content-Type": "application/json",
+              withCredentials: true,
+              "ngrok-skip-browser-warning": "any",
+            },
+          }).then((res) => {
+            if(res.data == 'ok')
+              router.push({ name: 'vasttag' })
+          }).catch((err) => {
+            router.push({ name: 'createaccount' })
+          })
         })
+
+    const path1 = "https://6e9c-65-109-52-221.eu.ngrok.io/api/getUserByEmail"
+    axios.post(path1, request, {
+      headers: {
+        "Content-Type": "application/json",
+        withCredentials: true,
+        "ngrok-skip-browser-warning": "any",
+      },
+    }).then((res) => {
+      console.log(res.data.name)
+      this.companyName = res.data.name
+    }).catch((err) => {
+      console.log(err)
+    })
   },
   watch: {
     startDate(newVal) {

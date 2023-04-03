@@ -297,7 +297,7 @@ export default {
           this.revenue = 0;
           this.isNameValid = false;
           this.isVastValid = false;
-          this.source_fee = false;
+          this.sourceFee = false;
           this.sourceFeePercentage = false;
           this.isSourceFeePercentageDisable = true;
           this.sourceFeeValue = 0;
@@ -378,7 +378,7 @@ export default {
           this.revenue = 0;
           this.isNameValid = false;
           this.isVastValid = false;
-          this.source_fee = false;
+          this.sourceFee = false;
           this.sourceFeePercentage = false;
           this.isSourceFeePercentageDisable = true;
           this.sourceFeeValue = 0;

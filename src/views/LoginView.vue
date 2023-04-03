@@ -15,7 +15,7 @@ const styles = {
   }
 }
 
-const REDIRECT_URL = 'https://bb71-188-43-136-42.jp.ngrok.io/authenticate'
+const REDIRECT_URL = 'https://ce78-188-43-136-42.eu.ngrok.io/authenticate'
 
 const config = {
   products: [Products.oauth, Products.emailMagicLinks],
