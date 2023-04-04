@@ -4,15 +4,28 @@
         >Vast Tag</span
       >
       <v-form ref="form" class="m-[30px]">
-        <v-text-field
-          v-model="vastTag"
-          :rules="vastTagRules"
-          label="Vast Tag"
-          required
-        ></v-text-field>
+        <h1>What version of VAST does your ad server support?</h1>
+        <v-combobox
+          :items="['VAST 2.0', 'VAST 3.0', 'VAST 4.0', 'VAST 4.1', 'VAST 4.2']"
+          v-model="vastTagVersion"
+          :rules="vastTagVersionRules"
+        ></v-combobox>
+        <h1>How does the ad server pass client IP?</h1>
+        <v-combobox
+          :items="['Via Macro','Via Header']"
+          v-model="serverPassIp"
+          :rules="serverPassIpRules"
+        ></v-combobox>
+        <h1>Does your ad server support a pods?</h1>
+        <v-combobox
+          :items="['Yes', 'No']"
+          v-model="serverSupport"
+          :rules="serverSupportRules"
+          :disabled="isVastTagVersionDisabled"
+        ></v-combobox>
         <div class="d-flex flex-column">
           <v-btn color="success" class="mt-4" block @click="validate">
-            Submit
+            That's all the quesions
           </v-btn>
         </div>
       </v-form>
@@ -27,9 +40,18 @@
     name: 'VastTagView',
     data: () => ({
       valid: true,
-      vastTag: "",
-      vastTagRules: [
-        (v) => !!v || "VAST tag is required",
+      vastTagVersion: "",
+      serverPassIp: "",
+      serverSupport: "",
+      isVastTagVersionDisabled: true,
+      vastTagVersionRules: [
+        (v) => !!v || "VAST version tag is required",
+      ],
+      serverPassIpRules: [
+        (v) => !!v || "serverPassIp tag is required",
+      ],
+      serverSupportRules: [
+        (v) => !!v || "serverSupport tag is required",
       ]
     }),
     methods: {
@@ -42,8 +64,10 @@
           const jsonData = JSON.parse(data)
   
           const user_email = jsonData.user.emails[0].email;
-          const vast_tag = this.vastTag;
-          const request = { user_email: user_email, vast_tag: vast_tag  }
+          const vast_tag_version = this.vastTagVersion;
+          const server_pass_ip = this.serverPassIp;
+          const server_support = this.serverSupport;
+          const request = { user_email: user_email, vast_tag_version: vast_tag_version, server_pass_ip: server_pass_ip, server_support: server_support  }
           const path = "https://6e9c-65-109-52-221.eu.ngrok.io/api/createVast";
           console.log(path);
           axios.post(path, request, {
@@ -105,6 +129,14 @@
           console.log(err)
           router.push({ name: 'createaccount' })
         })
+    },
+    watch: {
+      vastTagVersion: function (newVal){
+        console.log(newVal);
+        if (newVal == 'VAST 2.0' || newVal == 'VAST 3.0')
+          this.isVastTagVersionDisabled = true;
+        else this.isVastTagVersionDisabled = false;
+      }
     }
   };
   </script>

@@ -32,7 +32,13 @@
         label="Domain"
         required
       ></v-text-field>
-      <v-switch label="Prod env" class="flex"></v-switch>
+      <v-text-field
+        v-model="headerBidding"
+        :rules="headerBiddingRules"
+        label="Header Bidding URL"
+        required
+      ></v-text-field>
+      <v-switch label="Prod env" v-model="prodEnv" inset></v-switch>
       <div class="d-flex flex-column">
         <v-btn color="success" class="mt-4" block @click="validate">
           Submit
@@ -54,7 +60,8 @@ export default {
     lastName: "",
     companyName: "",
     companyWebsite: "",
-    adserver: false,
+    headerBidding: "",
+    prodEnv: false,
     firstNameRules: [(v) => !!v || "First Name is required"],
     lastNameRules: [(v) => !!v || "Last Name is required"],
     companyNameRules: [(v) => !!v || "Company Name is required"],
@@ -67,7 +74,15 @@ export default {
           )) ||
         "Must be a valid website",
     ],
-    adserverRules: [(v) => !!v || "Adserver is required"],
+    headerBiddingRules: [
+      (v) => !!v || "Bidding URL is required",
+      (v) =>
+        (v &&
+          /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w.-]*)*\/?$/i.test(
+            v
+          )) ||
+        "Must be a valid website",
+    ]
   }),
 
   methods: {
@@ -85,15 +100,16 @@ export default {
         const user_email = jsonData.user.emails[0].email;
         const company_name = this.companyName;
         const company_website = this.companyWebsite;
-        const company_email = this.companyEmail;
-        const adserver = this.adserver;
+        const prod_env = this.prodEnv;
+        const header_bidding_url = this.headerBidding;
         const request = {
           first_name: first_name,
           last_name: last_name,
           user_email: user_email,
           company_name: company_name,
           company_website: company_website,
-          adserver: adserver,
+          prod_env: prod_env,
+          header_bidding_url: header_bidding_url
         };
         const path =
           "https://6e9c-65-109-52-221.eu.ngrok.io/api/createAccounts";

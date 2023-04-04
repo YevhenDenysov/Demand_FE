@@ -8,170 +8,181 @@
       <h1 class="text-center text-[30px] font-bold bg-[#eeeeee] py-[5px]">
         Add New Demand Source
       </h1>
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[180px] flex items-center">
-          <h1 class="font-bold">Name</h1>
-        </div>
-
-        <div class="w-full">
-          <input
-            type="text"
-            class="w-full border border-black rounded-[4px] px-[5px] py-[4px]"
-            v-model="name"
-          />
-          <!-- <input type="text" class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.name"
-              v-else-if="value != null" /> -->
-          <span class="text-red" v-if="isNameValid"
-            >Please enter a valid name.</span
-          >
-        </div>
-      </div>
-      <div class="flex mt-[20px] gap-3">
-        <div class="w-[180px] flex items-center">
-          <h1 class="font-bold">Status</h1>
-        </div>
-        <div class="w-full">
-          <v-switch
-            class="flex"
-            label="Active"
-            color="green"
-            v-model="status"
-            hide-details
-          ></v-switch>
-        </div>
-        <!-- <v-switch class="flex" label="Active" color="green" v-model="value.status" v-else-if="value != null"
-            hide-details></v-switch> -->
-      </div>
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[180px] flex items-center">
-          <h1 class="font-bold">Floor[cpm]</h1>
-        </div>
-        <div class="w-full">
-          <input
-            type="number"
-            class="w-full border border-black rounded-[4px] px-[5px] py-[4px]"
-            v-model="floor"
-          />
-          <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.floor"
-              v-else-if="value != null" /> -->
-          <span class="text-red" v-if="isFloorValid"
-            >Please enter a valid Floor.</span
-          >
-        </div>
-      </div>
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[130px] flex items-center">
-          <h1 class="font-bold">Bid Type</h1>
-        </div>
-        <div class="flex gap-2">
-          <div class="flex justify-center items-center">
-            <h1>Fixed</h1>
+      <div class="px-[40px]">
+        <div class="flex w-full mt-[20px] gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">Name:</h1>
           </div>
-          <v-switch class="flex" v-model="bid_type" hide-details></v-switch>
-          <!-- <v-switch class="flex" v-model="value.bid_type" hide-details v-else-if="value != null"></v-switch> -->
-          <div class="flex justify-center items-center">
-            <h1>Dynamic</h1>
+
+          <div class="w-full">
+            <input
+              type="text"
+              class="w-full border !border-black important border-[3px] rounded-[4px] px-[5px] py-[4px]"
+              v-model="name"
+            />
+            <!-- <input type="text" class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.name"
+                v-else-if="value != null" /> -->
+            <span class="text-red" v-if="isNameValid"
+              >Please enter a valid name.</span
+            >
           </div>
         </div>
-      </div>
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[180px] flex items-center">
-          <h1 class="font-bold">VAST Url</h1>
+
+        <div class="flex gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">Status:</h1>
+          </div>
+          <div class="w-full">
+            <v-switch
+              class="flex"
+              label="Active"
+              color="green"
+              v-model="status"
+              hide-details
+              inset
+            ></v-switch>
+          </div>
+          <!-- <v-switch class="flex" label="Active" color="green" v-model="value.status" v-else-if="value != null"
+              hide-details></v-switch> -->
         </div>
-        <div class="w-full">
-          <input
-            class="w-full border border-black rounded-[4px] px-[5px] py-[4px]"
-            v-model="vast_url"
-          />
-          <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.vast_url"
-              v-else-if="value != null" /> -->
-          <span class="text-red" v-if="isVastValid == 1"
-            >Please enter a valid Vast URL.</span
+
+        <div class="flex w-full gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">Demand&nbsp;Fees:</h1>
+          </div>
+          <div class="flex gap-2">
+            <h1 class="flex items-center">No</h1>
+            <v-switch
+              class="flex"
+              color="green"
+              v-model="sourceFee"
+              hide-details
+              inset
+            ></v-switch>
+            <h1 class="flex items-center">Yes</h1>
+            <!-- <input class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.vast_url"
+                v-else-if="value != null" /> -->
+          </div>
+        </div>
+
+        <div class="flex w-full gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">Demand&nbsp;Fee&nbsp;Type:</h1>
+          </div>
+          <div class="flex gap-2">
+            <h1 class="flex items-center">CPM</h1>
+            <v-switch
+              class="flex"
+              color="green"
+              v-model="sourceFeePercentage"
+              :disabled="isSourceFeePercentageDisable"
+              hide-details
+              inset
+            ></v-switch>
+            <h1 class="flex items-center">Percentage</h1>
+            <!-- <input class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.vast_url"
+                v-else-if="value != null" /> -->
+          </div>
+        </div>
+
+        <div class="flex w-full mt-[10px] gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">Demand&nbsp;Fee&nbsp;Value:</h1>
+          </div>
+          <div class="w-full">
+            <input
+              type="number"
+              class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]"
+              v-model="sourceFeeValue"
+              :disabled="isSourceFeeValueDisable"
+            />
+            <!-- <input class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.floor"
+                v-else-if="value != null" /> -->
+            <span class="text-red" v-if="isFloorValid"
+              >Please enter a valid Floor.</span
+            >
+          </div>
+        </div>
+
+        <div class="flex w-full mt-[20px] gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">Floor&nbsp;CPM:</h1>
+          </div>
+          <div class="w-full">
+            <input
+              type="number"
+              class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]"
+              v-model="floor"
+            />
+            <!-- <input class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.floor"
+                v-else-if="value != null" /> -->
+            <span class="text-red" v-if="isFloorValid"
+              >Please enter a valid Floor.</span
+            >
+          </div>
+        </div>
+
+        <div class="flex w-full mt-[10px] gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">Bid&nbsp;Type:</h1>
+          </div>
+          <div class="flex gap-2">
+            <div class="flex justify-center items-center">
+              <h1>Fixed</h1>
+            </div>
+            <v-switch class="flex" v-model="bid_type" hide-details inset></v-switch>
+            <!-- <v-switch class="flex" v-model="value.bid_type" hide-details v-else-if="value != null"></v-switch> -->
+            <div class="flex justify-center items-center">
+              <h1>Dynamic</h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex w-full gap-3">
+          <div class="flex items-center">
+            <h1 class="font-bold">VAST&nbsp;Url:</h1>
+          </div>
+          <div class="w-full">
+            <input
+              class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]"
+              v-model="vast_url"
+            />
+            <!-- <input class="w-full border !border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.vast_url"
+                v-else-if="value != null" /> -->
+            <span class="text-red" v-if="isVastValid == 1"
+              >Please enter a valid Vast URL.</span
+            >
+            <span class="text-red" v-else-if="isVastValid == 2"
+              >URL is not required.</span
+            >
+          </div>
+        </div>
+
+        <div class="flex justify-between mt-[30px]">
+          <button
+            type="button"
+            class="text-[20px] px-[30px] py-[10px] rounded-[40px] border !border-black"
+            @click="close"
           >
-          <span class="text-red" v-else-if="isVastValid == 2"
-            >URL is not required.</span
+            CANCEL
+          </button>
+          <button
+            type="button"
+            class="text-[20px] px-[30px] py-[10px] border rounded-[40px] !border-black font-bold text-white bg-gray-800"
+            v-if="value != null"
+            @click="edit"
           >
-        </div>
-      </div>
-
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[180px] flex items-center">
-          <h1 class="font-bold">Source Fee</h1>
-        </div>
-        <div class="w-full">
-          <v-switch
-            class="flex"
-            label="Active"
-            color="green"
-            v-model="sourceFee"
-            hide-details
-          ></v-switch>
-          <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.vast_url"
-              v-else-if="value != null" /> -->
-        </div>
-      </div>
-
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[180px] flex items-center">
-          <h1 class="font-bold">Percentage</h1>
-        </div>
-        <div class="w-full flex">
-          <v-switch
-            class="flex"
-            label="True"
-            color="green"
-            v-model="sourceFeePercentage"
-            :disabled="isSourceFeePercentageDisable"
-            hide-details
-          ></v-switch>
-          <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.vast_url"
-              v-else-if="value != null" /> -->
-        </div>
-      </div>
-
-      <div class="flex w-full mt-[20px] gap-3">
-        <div class="w-[180px] flex items-center">
-          <h1 class="font-bold">SourceFee Value</h1>
-        </div>
-        <div class="w-full">
-          <input
-            type="number"
-            class="w-full border border-black rounded-[4px] px-[5px] py-[4px]"
-            v-model="sourceFeeValue"
-            :disabled="isSourceFeeValueDisable"
-          />
-          <!-- <input class="w-full border border-black rounded-[4px] px-[5px] py-[4px]" v-model="value.floor"
-              v-else-if="value != null" /> -->
-          <span class="text-red" v-if="isFloorValid"
-            >Please enter a valid Floor.</span
+            EDIT
+          </button>
+          <button
+            type="button"
+            class="text-[20px] px-[30px] py-[10px] border rounded-[40px] !border-black font-bold text-white bg-gray-800"
+            v-else-if="value === null"
+            @click="create"
           >
+            CREATE
+          </button>
         </div>
-      </div>
-
-      <div class="flex justify-between mt-[30px]">
-        <button
-          type="button"
-          class="text-[20px] px-[30px] py-[10px] rounded-[40px] border border-black"
-          @click="close"
-        >
-          CANCEL
-        </button>
-        <button
-          type="button"
-          class="text-[20px] px-[30px] py-[10px] border rounded-[40px] border-black font-bold text-white bg-gray-800"
-          v-if="value != null"
-          @click="edit"
-        >
-          EDIT
-        </button>
-        <button
-          type="button"
-          class="text-[20px] px-[30px] py-[10px] border rounded-[40px] border-black font-bold text-white bg-gray-800"
-          v-else-if="value === null"
-          @click="create"
-        >
-          CREATE
-        </button>
       </div>
     </div>
   </div>

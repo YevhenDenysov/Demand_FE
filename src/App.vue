@@ -15,7 +15,6 @@ const unsubscribe = stytch.session.onChange((session) => {
   console.log('ONCHANGE', session)
 
   if (session) {
-    // router.push({ name: 'dashboard' })
     router.push({name: 'dashboard'})
   } else {
     router.push({ name: 'login' })

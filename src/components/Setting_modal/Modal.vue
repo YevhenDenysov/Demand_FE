@@ -29,21 +29,6 @@
           >
         </div>
       </div>
-      <div class="flex mt-[20px] gap-3">
-        <div class="w-[100px] flex items-center">
-          <h1 class="font-bold">Env Status</h1>
-        </div>
-        <div class="flex gap-3">
-          <h1 class="flex items-center">Sandbox</h1>
-          <v-switch
-            class="flex"
-            color="green"
-            v-model="status"
-            hide-details
-          ></v-switch>
-          <h1 class="flex items-center">Production</h1>
-        </div>
-      </div>
       <div class="flex justify-between mt-[30px]">
         <button
           type="button"
@@ -128,7 +113,8 @@ export default {
         })
         .catch((err) => {
           console.log(err.response.data.message);
-          this.close()
+          alert(err.response.data.message)
+          // this.close()
         });
     },
   },
